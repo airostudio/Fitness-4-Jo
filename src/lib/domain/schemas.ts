@@ -75,6 +75,7 @@ export const programSchema = z.object({
   }).strict()).max(4),
   screening: z.object({ status: z.enum(["ok", "caution", "clearance_recommended"]), reasons: z.array(text(400)).max(20), modifications: z.array(text(400)).max(20) }).strict(),
   exerciseTargets: z.record(z.string(), z.object({ weight: z.number().min(0).max(100).nullable().optional(), sets: z.number().int().min(1).max(6).optional(), updatedAt: ts }).strict()),
+  reviewedUntil: date.optional(),
   updatedAt: ts,
 }).strict();
 

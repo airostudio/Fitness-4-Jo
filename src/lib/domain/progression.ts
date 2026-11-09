@@ -126,7 +126,9 @@ export function evaluateProgression(i: ProgressionInput): Rec {
     if (sameWeight(workingWeight(h[k]!), cur)) runLength++; else break;
   }
   const lastQualifies = allSetsDone(last) && atTop(last) && effortManageable(last);
-  const prevQualifies = !!prev && sameWeight(workingWeight(prev), cur) && allSetsDone(prev) && !anyBelowMin(prev) && hardCount(prev, "very_hard") === 0 && prev.technique !== "unsure";
+  // The earlier session must also have been close to the top of the range (all sets ≥ top − 1), e.g. 10 → 11 → 12 reps.
+  const prevQualifies = !!prev && sameWeight(workingWeight(prev), cur) && allSetsDone(prev) && repsOf(prev).every((r) => r >= prev.repMax - 1) &&
+    hardCount(prev, "very_hard") === 0 && prev.technique !== "unsure";
 
   if (!lastQualifies) {
     if (!allSetsDone(last)) {

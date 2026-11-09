@@ -165,6 +165,8 @@ export interface Program {
   templates: WorkoutTemplate[];
   screening: Screening;
   exerciseTargets: Record<string, ExerciseTarget>;
+  /** Monday (YYYY-MM-DD) of the last calendar week Jo reviewed */
+  reviewedUntil?: string;
   updatedAt: string;
 }
 

@@ -108,6 +108,7 @@ create table public.training_programs (
   templates jsonb not null,
   screening jsonb not null,
   exercise_targets jsonb not null default '{}'::jsonb,
+  reviewed_until date,
   updated_at timestamptz not null,
   server_updated_at timestamptz not null default now()
 );
