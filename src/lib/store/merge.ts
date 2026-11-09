@@ -2,8 +2,8 @@ import { ENTITIES, type EntityName } from "@/lib/domain/schemas";
 import { recordFromRow, type QueuedOp } from "@/lib/domain/sync";
 import type { AppData } from "./types";
 
-const ARRAYS = ["scheduled", "sessions", "sets", "checkins", "recommendations", "decisions", "milestones", "journal"] as const;
-const SINGLES = ["profile", "preferences", "equipment", "health", "goals", "notifications"] as const;
+const ARRAYS = ["scheduled", "sessions", "sets", "checkins", "recommendations", "decisions", "milestones", "journal", "nutritionLogs"] as const;
+const SINGLES = ["profile", "preferences", "equipment", "health", "goals", "notifications", "nutrition"] as const;
 type Remote = Partial<Record<EntityName, Record<string, unknown>[]>>;
 
 const time = (x: unknown) => Date.parse(String((x as { updatedAt?: string })?.updatedAt ?? 0)) || 0;

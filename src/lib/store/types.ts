@@ -4,6 +4,7 @@ import type {
   ProgressionDecision, ProgressionRecommendation, Profile, Program, ReadinessCheckin, ScheduledWorkout, WorkoutSession,
 } from "@/lib/domain/types";
 import { DEFAULT_TZ } from "@/lib/domain/dates";
+import { defaultNutrition, type NutritionLog, type NutritionPrefs } from "@/lib/domain/nutrition";
 
 export interface AppData {
   v: 1;
@@ -22,6 +23,8 @@ export interface AppData {
   decisions: ProgressionDecision[];
   milestones: Milestone[];
   journal: JournalEntry[];
+  nutrition: NutritionPrefs;
+  nutritionLogs: NutritionLog[];
   meta: { queue: QueuedOp[]; lastPullAt?: string; lastSyncAt?: string; lastError?: string };
 }
 
@@ -41,6 +44,7 @@ export function emptyData(): AppData {
     goals: { priorities: ["everyday_strength"], personalNote: "", updatedAt: EPOCH },
     notifications: { enabled: false, days: [1, 4], time: "09:00", quietStart: "21:00", quietEnd: "07:00", dayBefore: true, updatedAt: EPOCH },
     program: null, scheduled: [], sessions: [], sets: [], checkins: [], recommendations: [], decisions: [], milestones: [], journal: [],
+    nutrition: defaultNutrition(), nutritionLogs: [],
     meta: { queue: [] },
   };
 }

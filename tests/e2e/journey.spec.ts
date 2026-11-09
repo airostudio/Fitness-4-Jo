@@ -174,3 +174,30 @@ test.describe("exercise illustrations", () => {
     await context.setOffline(false);
   });
 });
+
+test.describe("nutrition", () => {
+  test("opt-in, log a serve, respects allergens, and can be deleted", async ({ page }) => {
+    await onboard(page);
+    await page.goto("/nutrition");
+    await expect(page.getByRole("heading", { name: "Fuel your strength" })).toBeVisible();
+    await expect(page.getByText(/no calorie counting/i).first()).toBeVisible();
+    await page.getByRole("button", { name: "Turn on nutrition support" }).click();
+    await page.getByRole("button", { name: "Add a serve of Vegetables & legumes" }).click();
+    await expect(page.getByText("1 of 5 serves")).toBeVisible();
+    await page.reload();
+    await expect(page.getByText("1 of 5 serves")).toBeVisible(); // persisted
+    // keep nuts + dairy out, vegan → none of the cards mention those
+    await page.getByText("Vegan", { exact: true }).click();
+    await page.getByText("Dairy (milk, cheese, yoghurt)").click();
+    await page.getByText("Tree nuts and peanuts").click();
+    for (const t of ["Breakfast", "Lunch", "Dinner", "Snacks"]) {
+      await page.getByText(t, { exact: true }).click();
+      const warn = await page.locator("text=/Contains:/").allTextContents();
+      for (const w of warn) { expect(w).not.toMatch(/dairy|nuts/); }
+    }
+    await expect(page.getByText(/Butterfly National Helpline/)).toBeVisible();
+    await page.getByRole("button", { name: /Turn off and delete my nutrition data/ }).click();
+    await page.getByRole("button", { name: "Delete and turn off" }).click();
+    await expect(page.getByRole("button", { name: "Turn on nutrition support" })).toBeVisible();
+  });
+});

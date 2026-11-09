@@ -25,7 +25,7 @@ export function compactQueue(queue: QueuedOp[]): QueuedOp[] {
 }
 
 /** Order: parents before children on upsert so foreign keys resolve; reverse for deletes. */
-const ORDER: EntityName[] = ["profile", "preferences", "equipment", "health", "goals", "notifications", "program", "scheduled", "checkins", "sessions", "sets", "recommendations", "decisions", "milestones", "journal"];
+const ORDER: EntityName[] = ["profile", "preferences", "equipment", "health", "goals", "notifications", "nutrition", "program", "scheduled", "checkins", "sessions", "sets", "recommendations", "decisions", "milestones", "journal", "nutritionLogs"];
 export function orderOps(ops: QueuedOp[]): QueuedOp[] {
   const rank = (o: QueuedOp) => (o.action === "delete" ? 100 - ORDER.indexOf(o.entity) : ORDER.indexOf(o.entity));
   return [...ops].sort((a, b) => (a.action === b.action ? rank(a) - rank(b) : a.action === "upsert" ? -1 : 1));

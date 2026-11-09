@@ -70,7 +70,7 @@ export class Harness {
       }),
       upsert: (table, row) => this.as(u, async (q) => {
         const cols = Object.keys(row);
-        const pk = table === "training_programs" || ["scheduled_workouts", "workout_sessions", "exercise_sets", "readiness_checkins", "progression_recommendations", "progression_decisions", "personal_milestones", "journal_entries"].includes(table) ? "id" : "user_id";
+        const pk = table === "training_programs" || ["scheduled_workouts", "workout_sessions", "exercise_sets", "readiness_checkins", "progression_recommendations", "progression_decisions", "personal_milestones", "journal_entries", "nutrition_logs"].includes(table) ? "id" : "user_id";
         await q(`insert into public.${table} (${cols.join(",")}) select ${cols.join(",")} from jsonb_populate_record(null::public.${table}, $1::jsonb)
           on conflict (${pk}) do update set ${cols.filter((c) => c !== pk && c !== "user_id").map((c) => `${c} = excluded.${c}`).join(",")}`, [JSON.stringify(row)]);
       }),

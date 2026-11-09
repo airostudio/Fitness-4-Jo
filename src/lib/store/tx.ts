@@ -2,8 +2,8 @@ import { makeOp, type QueuedOp } from "@/lib/domain/sync";
 import type { EntityName } from "@/lib/domain/schemas";
 import type { AppData, Ctx, TxResult } from "./types";
 
-type ArrayEntity = "scheduled" | "sessions" | "sets" | "checkins" | "recommendations" | "decisions" | "milestones" | "journal";
-type SingleEntity = "profile" | "preferences" | "equipment" | "health" | "goals" | "notifications";
+type ArrayEntity = "scheduled" | "sessions" | "sets" | "checkins" | "recommendations" | "decisions" | "milestones" | "journal" | "nutritionLogs";
+type SingleEntity = "profile" | "preferences" | "equipment" | "health" | "goals" | "notifications" | "nutrition";
 
 /** Tiny unit-of-work: applies changes to a copy of the data and records the sync ops they imply. */
 export class Tx {

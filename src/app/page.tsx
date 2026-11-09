@@ -116,6 +116,12 @@ export default function HomePage() {
           {pb ? <><p className="text-xl font-semibold">{exerciseName(pb.exerciseId)}</p><p className="text-sm text-muted">{formatKg(pb.weight)} × {pb.reps} on {formatDateAU(pb.date)}</p></> : <p className="text-muted">Log a weighted exercise and your personal bests will appear here.</p>}</Card>
       </div>
 
+      <Link href="/nutrition" className="lift flex items-center gap-4 rounded-card border border-line bg-gradient-to-br from-soft to-surface p-5 shadow-card">
+        <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-surface text-3xl">🥗</span>
+        <span><span className="block text-lg font-bold">{data.nutrition.enabled ? "Fuel your strength" : "Add gentle nutrition support"}</span>
+          <span className="block text-muted">{data.nutrition.enabled ? "Log today's plate and see meal ideas" : "Optional food ideas to support your training – no calorie counting."}</span></span>
+        <ArrowRight aria-hidden className="ml-auto shrink-0" size={18} /></Link>
+
       <Card className="space-y-2"><h2 className="text-lg font-bold">Recommended next step</h2>
         <p className="text-muted">{active ? "Finish your open workout." : todays?.status === "planned" && !completedToday ? "Start today's session when you feel ready." : recs.length ? "Review your suggestion above." : next ? `Enjoy your rest. Next session: ${formatDateAU(next.date, "weekday")}.` : "Check your calendar in My Workouts."}</p>
         <Link href="/workouts" className="inline-flex min-h-11 items-center gap-1 font-semibold text-primary underline">See my schedule <ArrowRight aria-hidden size={16} /></Link></Card>

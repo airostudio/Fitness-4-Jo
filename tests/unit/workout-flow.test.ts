@@ -347,3 +347,39 @@ describe("pull & merge never loses offline work", () => {
     expect(mergeRemote(sim.data, { journal: [] }).journal).toHaveLength(1);
   });
 });
+
+import { defaultNutrition } from "@/lib/domain/nutrition";
+describe("nutrition (optional, private)", () => {
+  it("is off by default and queues sync ops when used", () => {
+    const sim = new Sim(); sim.onboard();
+    expect(sim.data.nutrition).toEqual(defaultNutrition());
+    sim.do((d, c) => A.updateNutrition(d, c, { enabled: true, style: "vegan", avoid: ["soy"] }));
+    sim.do((d, c) => A.adjustServes(d, c, sim.today, { group: "veg", delta: 1 }));
+    const q = sim.data.meta.queue.map((o) => o.entity);
+    expect(q).toContain("nutrition"); expect(q).toContain("nutritionLogs");
+  });
+  it("keeps one record per day, clamps values and never goes below zero", () => {
+    const sim = new Sim(); sim.onboard();
+    for (let i = 0; i < 20; i++) sim.do((d, c) => A.adjustServes(d, c, sim.today, { group: "veg", delta: 1 }));
+    sim.do((d, c) => A.adjustServes(d, c, sim.today, { group: "fruit", delta: -1 }));
+    sim.do((d, c) => A.adjustServes(d, c, sim.today, { waterDelta: -3 }));
+    expect(sim.data.nutritionLogs).toHaveLength(1);
+    expect(sim.data.nutritionLogs[0]).toMatchObject({ serves: { veg: 12, fruit: 0 }, waterCups: 0 });
+    for (const op of sim.data.meta.queue.filter((o) => o.entity === "nutritionLogs" && o.action === "upsert")) expect(ENTITIES.nutritionLogs.schema.safeParse(op.record).success).toBe(true);
+  });
+  it("turning it off deletes every food log and is queued for sync; workouts are untouched", () => {
+    const sim = new Sim(); sim.onboard(); sim.workout("A");
+    sim.do((d, c) => A.updateNutrition(d, c, { enabled: true }));
+    sim.do((d, c) => A.adjustServes(d, c, sim.today, { group: "protein", delta: 2 }));
+    sim.do((d, c) => A.clearNutrition(d, c));
+    expect(sim.data.nutritionLogs).toHaveLength(0); expect(sim.data.nutrition.enabled).toBe(false);
+    expect(sim.data.sessions).toHaveLength(1);
+    expect(sim.data.meta.queue.some((o) => o.entity === "nutritionLogs" && o.action === "delete")).toBe(true);
+  });
+  it("older saved data without nutrition fields still loads with safe defaults", async () => {
+    const { emptyData } = await import("@/lib/store/types");
+    const { nutrition: _n, nutritionLogs: _l, ...legacy } = emptyData();
+    const merged = { ...emptyData(), ...legacy };
+    expect(merged.nutrition.enabled).toBe(false); expect(merged.nutritionLogs).toEqual([]);
+  });
+});

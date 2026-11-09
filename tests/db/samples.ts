@@ -21,6 +21,8 @@ export function samples(): Record<EntityName, { id: string; record: Record<strin
     recommendations: { id: recId, record: { id: recId, exerciseId: "dumbbell-curl", action: "hold", title: "Steady", message: "Jo, keep going.", explanation: ["rule a"], proposed: null, alternatives: [], needsDecision: false, ruleVersion: "2026.1", createdAt: NOW, updatedAt: NOW } },
     decisions: { id: randomUUID(), record: { id: "", recommendationId: recId, exerciseId: "dumbbell-curl", decision: "accepted", chosen: { weight: 3 }, decidedAt: NOW, updatedAt: NOW } },
     milestones: { id: randomUUID(), record: { id: "", key: "first_session", achievedAt: NOW, updatedAt: NOW } },
+    nutrition: { id: "self", record: { enabled: true, style: "vegetarian", avoid: ["nuts"], avoidOther: "", showProteinGuide: true, updatedAt: NOW } },
+    nutritionLogs: { id: randomUUID(), record: { id: "", date: "2026-11-09", serves: { veg: 3, fruit: 1, grains: 2, protein: 2, dairy: 1 }, waterCups: 4, note: "", createdAt: NOW, updatedAt: NOW } },
     journal: { id: randomUUID(), record: { id: "", date: "2026-11-09", feeling: "Felt strong", enjoyed: ["Glute bridge"], disliked: [], achievement: "Finished my first week", goal: "", mobilityNote: "", sharedWithSupporter: false, createdAt: NOW, updatedAt: NOW } },
   };
 }
@@ -29,6 +31,6 @@ let cached: ReturnType<typeof samples> | null = null;
 export function withIds() {
   if (cached) return cached;
   const s = samples();
-  for (const k of ["scheduled", "sets", "decisions", "milestones", "journal"] as const) s[k].record.id = s[k].id;
+  for (const k of ["scheduled", "sets", "decisions", "milestones", "journal", "nutritionLogs"] as const) s[k].record.id = s[k].id;
   return (cached = s);
 }

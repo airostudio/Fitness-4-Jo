@@ -4,8 +4,8 @@ import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Too
 
 export interface Series { key: string; label: string; color?: string; }
 /** Accessible chart: a text summary for screen readers plus the same data as a table. Colour is never the only signal (labels, markers, table). */
-export function AccessibleChart({ title, summary, data, xKey, series, kind, unit, empty }: {
-  title: string; summary: string; data: Record<string, string | number | null>[]; xKey: string; series: Series[]; kind: "line" | "bar"; unit?: string; empty?: ReactNode;
+export function AccessibleChart({ title, summary, data, xKey, series, kind, unit, empty, yMax }: {
+  title: string; summary: string; data: Record<string, string | number | null>[]; xKey: string; series: Series[]; kind: "line" | "bar"; unit?: string; empty?: ReactNode; yMax?: number;
 }) {
   if (!data.length) return <figure><figcaption className="mb-2 font-bold">{title}</figcaption>{empty ?? <p className="text-muted">Nothing to show yet.</p>}</figure>;
   const axis = { stroke: "var(--muted)", fontSize: 12 } as const;
@@ -16,7 +16,7 @@ export function AccessibleChart({ title, summary, data, xKey, series, kind, unit
         <ResponsiveContainer width="100%" height="100%">
           {kind === "bar" ? (
             <BarChart data={data} margin={{ left: -16, right: 8, top: 8 }}>
-              <CartesianGrid stroke="var(--border)" vertical={false} /><XAxis dataKey={xKey} {...axis} /><YAxis allowDecimals={false} {...axis} />
+              <CartesianGrid stroke="var(--border)" vertical={false} /><XAxis dataKey={xKey} {...axis} /><YAxis allowDecimals={false} {...axis} domain={[0, yMax ?? "auto"]} />
               <Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--fg)" }} />
               {series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color ?? "var(--ring-fill)"} radius={[10, 10, 0, 0]} />)}
             </BarChart>

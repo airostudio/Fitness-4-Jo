@@ -133,6 +133,17 @@ export const journalSchema = z.object({
   photoPath: text(200).optional(), sharedWithSupporter: z.boolean(), createdAt: ts, updatedAt: ts,
 }).strict();
 
+const group = z.number().int().min(0).max(12);
+export const nutritionSchema = z.object({
+  enabled: z.boolean(), style: z.enum(["everything", "pescatarian", "vegetarian", "vegan"]),
+  avoid: z.array(z.enum(["dairy", "gluten", "nuts", "eggs", "soy", "fish", "shellfish", "sesame"])).max(8),
+  avoidOther: text(200), showProteinGuide: z.boolean(), updatedAt: ts,
+}).strict();
+export const nutritionLogSchema = z.object({
+  id, date, serves: z.object({ veg: group, fruit: group, grains: group, protein: group, dairy: group }).strict(),
+  waterCups: z.number().int().min(0).max(30), note: text(500), createdAt: ts, updatedAt: ts,
+}).strict();
+
 // --- Registry: entity name → table, kind, schema --------------------------------
 export const ENTITIES = {
   profile: { table: "profiles", single: true, schema: profileSchema },
@@ -150,6 +161,8 @@ export const ENTITIES = {
   decisions: { table: "progression_decisions", single: false, schema: decisionSchema },
   milestones: { table: "personal_milestones", single: false, schema: milestoneSchema },
   journal: { table: "journal_entries", single: false, schema: journalSchema },
+  nutrition: { table: "nutrition_preferences", single: true, schema: nutritionSchema },
+  nutritionLogs: { table: "nutrition_logs", single: false, schema: nutritionLogSchema },
 } as const;
 export type EntityName = keyof typeof ENTITIES;
 export const ENTITY_NAMES = Object.keys(ENTITIES) as EntityName[];

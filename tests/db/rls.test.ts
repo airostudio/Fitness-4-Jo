@@ -35,7 +35,7 @@ describe("sync into Postgres under RLS (every entity)", () => {
     const repo = h.repoFor(jo);
     const ops = ENTITY_NAMES.map((e) => makeOp(e, s[e].id, "upsert", s[e].record, String(s[e].record.updatedAt)));
     // parents first (the client orders ops; mimic that here)
-    const order = ["profile", "preferences", "equipment", "health", "goals", "notifications", "program", "scheduled", "checkins", "sessions", "sets", "recommendations", "decisions", "milestones", "journal"];
+    const order = ["profile", "preferences", "equipment", "health", "goals", "notifications", "nutrition", "program", "scheduled", "checkins", "sessions", "sets", "recommendations", "decisions", "milestones", "journal", "nutritionLogs"];
     ops.sort((a, b) => order.indexOf(a.entity) - order.indexOf(b.entity));
     const res = await applyBatch(repo, jo.id, ops);
     expect(res.map((r) => r.status)).toEqual(ops.map(() => "applied"));
@@ -178,7 +178,7 @@ describe("supporter access is enforced in the database", () => {
     expect(v).toHaveProperty("achievements");
     expect(v).not.toHaveProperty("metrics");
     expect(v).not.toHaveProperty("notes");
-    expect(JSON.stringify(v)).not.toMatch(/Sprained|kneeDiscomfort|knee_discomfort|Felt strong/);
+    expect(JSON.stringify(v)).not.toMatch(/Sprained|kneeDiscomfort|knee_discomfort|Felt strong|vegetarian|nutrition|serves/i);
   });
   it("Sam has no direct table access to Jo's data at all", async () => {
     for (const t of ["health_considerations", "journal_entries", "workout_sessions", "exercise_sets", "profiles", "personal_milestones"]) {

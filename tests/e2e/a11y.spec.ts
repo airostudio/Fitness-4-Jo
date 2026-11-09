@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { axe, onboard, startWorkout } from "./helpers";
 
-const pages = ["/", "/workouts", "/progress", "/journey", "/settings", "/exercises", "/exercises/chair-squat", "/privacy"];
+const pages = ["/", "/nutrition", "/workouts", "/progress", "/journey", "/settings", "/exercises", "/exercises/chair-squat", "/privacy"];
 
 test.describe("accessibility", () => {
   for (const scheme of ["light", "dark"] as const) {
@@ -13,6 +13,16 @@ test.describe("accessibility", () => {
         const r = await axe(page).analyze();
         expect(r.violations.map((v) => `${p}: ${v.id} – ${v.nodes[0]?.html.slice(0, 120)}`), p).toEqual([]);
       }
+    });
+  }
+  for (const scheme of ["light", "dark"] as const) {
+    test(`enabled nutrition page passes axe (${scheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await onboard(page);
+      await page.goto("/nutrition"); await page.getByRole("button", { name: "Turn on nutrition support" }).click();
+      await page.getByRole("button", { name: "Add a serve of Fruit" }).click();
+      const r = await axe(page).analyze();
+      expect(r.violations.map((v) => `${v.id} – ${v.nodes[0]?.html.slice(0, 120)}`)).toEqual([]);
     });
   }
   test("active workout, check-in and onboarding screens pass axe", async ({ page }) => {

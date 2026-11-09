@@ -3,6 +3,7 @@
 *A little stronger, every day.* — a private, mobile-first home strength companion (Next.js 16, TypeScript strict, Tailwind 4, Supabase, PWA).
 
 ## What it does
+(see also **Nutrition**, below)
 Personal onboarding → deterministic 12-week programme (then ongoing) → guided workout player with rest timer → conservative, explainable progressive-overload suggestions that Jo accepts or declines → dashboard, charts, journal, editable calendar → optional supporter sharing, reminders and offline use. No AI is required or used for health decisions.
 
 ## Quick start (no accounts needed)
@@ -33,3 +34,11 @@ With no Supabase variables the app stores everything in the browser (IndexedDB) 
 - **Progression** (`src/lib/domain/progression.ts`): needs two consecutive sessions at the same weight near the top of the range, manageable effort, good technique, no discomfort, no recent volume change; steps larger than 2.5 kg offer an extra set first; every recommendation stores its reasons and rule version; nothing changes without confirmation.
 - **Safety:** professional-restriction or frequent-discomfort answers lock the programme until Jo confirms she has guidance; new/significant pain on the check-in never offers training.
 - **Starting loads** come from calibration in the first session, never from age or body weight.
+
+## Nutrition (optional, off by default)
+`src/lib/domain/nutrition.ts` + `/nutrition`. Food-group serves based on the Australian Guide to Healthy Eating (no calorie counting, no weight-loss framing), 30 meal/snack ideas filtered by eating style and a keep-out list (8 allergen categories), post-workout tips, a balanced-plate guide and a weekly variety chart. Safeguards, all covered by tests:
+- a meal containing any avoided allergen is never suggested; allergen tags are checked against ingredient keywords so a hidden allergen fails the build;
+- the protein guide (≈1.2–1.6 g/kg) appears only with a weight, opt-in, an adult and no health notes – otherwise it points to a doctor or Accredited Practising Dietitian;
+- tone test bans calorie / weight-loss / "good-bad food" wording; a free eating-disorder helpline line is always shown;
+- data is private (RLS), never visible to supporters or admins, and can be deleted with one tap.
+Limits: general information only, not dietetic advice; meal ingredients are examples, so users must still read labels.

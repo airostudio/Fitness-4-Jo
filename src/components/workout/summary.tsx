@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Confetti, HeroArt, Medal } from "@/components/art";
+import { postWorkoutIdeas } from "@/lib/domain/nutrition";
 import { MILESTONE_DEFS } from "@/lib/domain/stats";
 import { mustExercise } from "@/lib/domain/exercises";
 import { encouragement } from "@/lib/domain/messages";
@@ -42,6 +43,8 @@ export function Summary({ sessionId }: { sessionId: string }) {
             return <li key={id} className="flex justify-between gap-3 py-2"><span className="font-semibold">{mustExercise(id).name}</span><span className="text-muted">{xs.map((x) => `${x.weight != null ? formatKg(x.weight) + " × " : ""}${x.reps}`).join(", ")}</span></li>;
           })}</ul></Card>
       )}
+      {data.nutrition.enabled && sets.length > 0 && (() => { const ideas = postWorkoutIdeas(data.nutrition, s.date); return (
+        <Notice tone="peach" title="Refuel and recover">A meal or snack with protein is a good habit after training{ideas.length ? ` – for example ${ideas.map((i) => i.name.toLowerCase()).join(" or ")}` : ""}. <Link href="/nutrition" className="font-semibold underline">More ideas</Link></Notice>); })()}
       {recs.map((r) => <RecommendationCard key={r.id} rec={r} />)}
       {sets.length > 0 && (
         <Card className="space-y-4"><h2 className="text-lg font-bold">How did it go? (optional)</h2>

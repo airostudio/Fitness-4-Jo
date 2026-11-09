@@ -103,6 +103,7 @@ export default function WorkoutsPage() {
           </Card>
         ))}
         <Link href="/exercises" className={buttonClass({ variant: "outline", size: "lg" }, "w-full")}>Browse the exercise library</Link>
+        <Link href="/nutrition" className={buttonClass({ variant: "outline", size: "lg" }, "w-full")}>Nutrition ideas to support your training</Link>
       </section>
 
       <Dialog open={!!moving} onClose={() => setMoving(null)} title="Move this session"

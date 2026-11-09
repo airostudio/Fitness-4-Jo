@@ -13,6 +13,7 @@ import type {
 } from "@/lib/domain/types";
 import { RULE_VERSION } from "@/lib/domain/progression";
 import { historyFor, activeSession, plannedPerWeek, setsFor, suggestedFor, weekAwaitingReview, daysSinceLast, lastSessionDate } from "./selectors";
+import { emptyServes, SERVES_MAX, type FoodGroup, type NutritionLog, type NutritionPrefs } from "@/lib/domain/nutrition";
 import { Tx } from "./tx";
 import type { AppData, Ctx, TxResult } from "./types";
 
@@ -430,3 +431,34 @@ export function todaysPlan(d: AppData, today: string) {
   return { today: item ?? null, next };
 }
 export { otherLetter, planWeek, addDays, assessReadiness, MILESTONE_DEFS, lastSessionDate };
+
+
+// ================================================================= nutrition (optional, private)
+export function updateNutrition(base: AppData, ctx: Ctx, patch: Partial<Omit<NutritionPrefs, "updatedAt">>): TxResult {
+  const tx = new Tx(base, ctx);
+  tx.single("nutrition", { ...base.nutrition, ...patch, updatedAt: ctx.now });
+  return tx.done(undefined);
+}
+export const logFor = (d: AppData, date: string): NutritionLog | undefined =>
+  d.nutritionLogs.filter((l) => l.date === date).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0];
+
+/** Adjust one food group (or water) for a day. Values are clamped; one record per day. */
+export function adjustServes(base: AppData, ctx: Ctx, date: string, change: { group?: FoodGroup; delta?: number; waterDelta?: number; note?: string }): TxResult<NutritionLog> {
+  const tx = new Tx(base, ctx);
+  const cur = logFor(base, date);
+  const serves = { ...(cur?.serves ?? emptyServes()) };
+  if (change.group && change.delta) serves[change.group] = Math.max(0, Math.min(SERVES_MAX, serves[change.group] + change.delta));
+  const log: NutritionLog = {
+    id: cur?.id ?? ctx.id(), date, serves, waterCups: Math.max(0, Math.min(30, (cur?.waterCups ?? 0) + (change.waterDelta ?? 0))),
+    note: change.note ?? cur?.note ?? "", createdAt: cur?.createdAt ?? ctx.now, updatedAt: ctx.now,
+  };
+  tx.put("nutritionLogs", log);
+  return tx.done(log);
+}
+/** Delete every nutrition record and switch the feature off (Jo's choice at any time). */
+export function clearNutrition(base: AppData, ctx: Ctx): TxResult {
+  const tx = new Tx(base, ctx);
+  for (const l of base.nutritionLogs) tx.remove("nutritionLogs", l.id);
+  tx.single("nutrition", { ...base.nutrition, enabled: false, updatedAt: ctx.now });
+  return tx.done(undefined);
+}
