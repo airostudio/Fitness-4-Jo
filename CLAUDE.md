@@ -32,7 +32,7 @@ Domain rules are pure TS in `src/lib/domain` (exercise library, programme, **det
 - Exercise images are AI-generated and must stay labelled as illustrations; four have display crops (`VISIBLE_WIDTH_PX` in `src/lib/exercise-art.ts`).
 
 ## Commands
-`npm run verify` (typecheck + lint + 260 unit/DB tests + build) · `npm run test:e2e` (Playwright, mobile) · `npm run gen:seed` (regenerates `0004_seed_reference.sql` – CI fails if stale) · `npm run gen:icons`.
+`npm run verify` (typecheck + lint + unit/DB tests + build) · `npm run test:e2e` (Playwright, mobile) · `npm run gen:seed` (regenerates `0004_seed_reference.sql` – CI fails if stale) · `npm run gen:icons`.
 Playwright is pinned to 1.63 to match the preinstalled browser; use `axe()` from `tests/e2e/helpers.ts`.
 
 ## Accessibility bar
