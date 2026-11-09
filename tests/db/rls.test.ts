@@ -248,3 +248,16 @@ describe("account deletion", () => {
     expect(Number((await h.db.query<{ n: string }>("select count(*) n from public.offline_sync_operations where user_id = $1", [mallory.id])).rows[0]!.n)).toBeGreaterThan(0);
   });
 });
+
+describe("supabase/verify.sql (the deployment check)", () => {
+  it("reports no problems on a correctly migrated database, and catches a deliberately broken one", async () => {
+    const { readFileSync } = await import("node:fs");
+    const sql = readFileSync("supabase/verify.sql", "utf8");
+    const clean = await h.db.query<{ status: string; detail: string }>(sql);
+    expect(clean.rows.filter((r) => r.status === "PROBLEM").map((r) => r.detail)).toEqual([]);
+    expect(clean.rows.some((r) => r.status === "INFO")).toBe(true);
+    await h.db.exec("alter table public.journal_entries disable row level security; update storage.buckets set public = true where id = 'journal-photos';");
+    const broken = (await h.db.query<{ status: string; detail: string }>(sql)).rows.filter((r) => r.status === "PROBLEM").map((r) => r.detail);
+    expect(broken).toEqual(expect.arrayContaining(["RLS DISABLED: journal_entries", "photo bucket missing or PUBLIC"]));
+  });
+});

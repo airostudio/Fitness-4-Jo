@@ -15,6 +15,8 @@ Status: **not deployed.** No JoStrong Supabase or Vercel project exists in the c
 5. **Invitation-only:** create Jo's user in Auth → Users (Invite user), then turn **off** "Allow new users to sign up". Set `NEXT_PUBLIC_INVITE_ONLY=true` to hide the sign-up UI.
 6. Make yourself an administrator (optional): `insert into public.app_admins (user_id) values ('<your auth user id>');`
 
+Verify the database: paste `supabase/verify.sql` into the SQL editor. No `PROBLEM` rows means tables, RLS, grants, functions, the private photo bucket and seed data are all in place (the script is itself tested against the migrations).
+
 ## 2. Vercel
 1. Import the GitHub repo. Framework: Next.js (auto). Build command `npm run build`.
 2. Environment variables (Production and Preview use *different* Supabase projects ideally) — see `.env.example`:
