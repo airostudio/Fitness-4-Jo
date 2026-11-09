@@ -90,7 +90,7 @@ export default function WorkoutsPage() {
                   <li key={s.slot} className="flex flex-wrap items-center justify-between gap-2 py-3">
                     <div><Link href={`/exercises/${e.id}`} className="font-semibold underline">{e.name}</Link><p className="text-sm text-muted">{e.muscles.join(", ")}{tgt?.weight != null ? ` · ${tgt.weight} kg` : ""}</p></div>
                     {alts.length > 1 && (
-                      <div className="min-w-44"><label className="sr-only" htmlFor={`sw-${t.letter}-${s.slot}`}>Swap {e.name}</label>
+                      <div className="w-full sm:w-64"><label className="sr-only" htmlFor={`sw-${t.letter}-${s.slot}`}>Swap {e.name}</label>
                         <Select id={`sw-${t.letter}-${s.slot}`} value={e.id} onChange={(ev) => { const r = run((d, c) => A.customiseSlot(d, c, t.letter as WorkoutLetter, s.slot as SlotKey, ev.target.value)); toast(r.ok ? "Exercise updated." : r.error ?? "Couldn't change that."); }}>
                           {alts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</Select></div>
                     )}

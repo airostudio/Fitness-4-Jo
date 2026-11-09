@@ -130,17 +130,15 @@ export function Player({ session, onFinished }: { session: WorkoutSession; onFin
   return (
     <div className="space-y-4">
       <header className="space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <div><h1 className="text-xl font-bold">Workout {session.letter} <span className="font-normal text-muted">· {formatDateAU(session.date)}{session.mode === "lighter" ? " · Lighter" : ""}</span></h1>
-            <p className="text-sm text-muted">Exercise {session.currentIndex + 1} of {session.exercises.length} · about {minutes} min</p></div>
-          <div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => run((d, c) => A.pauseSession(d, c, sid))}><Pause size={16} aria-hidden /> Pause workout</Button>
-            <Button variant="ghost" size="sm" onClick={() => setDialog("end")}><Square size={16} aria-hidden /> End workout</Button></div>
-        </div>
+        <div><h1 className="text-xl font-bold">Workout {session.letter} <span className="font-normal text-muted">· {formatDateAU(session.date)}{session.mode === "lighter" ? " · Lighter" : ""}</span></h1>
+          <p className="text-sm text-muted">Exercise {session.currentIndex + 1} of {session.exercises.length} · about {minutes} min</p></div>
+        <div className="grid grid-cols-2 gap-2"><Button variant="outline" size="sm" onClick={() => run((d, c) => A.pauseSession(d, c, sid))}><Pause size={16} aria-hidden /> Pause workout</Button>
+          <Button variant="outline" size="sm" onClick={() => setDialog("end")}><Square size={16} aria-hidden /> End workout</Button></div>
         <ProgressBar value={doneCount} max={session.exercises.length} label="Workout progress" />
         <ol className="flex gap-1.5" aria-label="Exercises">
           {session.exercises.map((e, i) => (
             <li key={e.id} className="flex-1"><button onClick={() => run((d, c) => A.gotoExercise(d, c, sid, i))} aria-label={`${mustExercise(e.exerciseId).name}${e.status === "done" ? ", done" : e.status === "skipped" ? ", skipped" : ""}`} aria-current={i === session.currentIndex ? "step" : undefined}
-              className={`flex h-9 w-full items-center justify-center rounded-lg border-2 text-sm font-bold ${i === session.currentIndex ? "border-primary bg-primary text-primary-fg" : "border-line bg-surface"}`}>{e.status === "done" ? "✓" : e.status === "skipped" ? "–" : i + 1}</button></li>
+              className={`flex h-11 w-full items-center justify-center rounded-lg border-2 text-sm font-bold ${i === session.currentIndex ? "border-primary bg-primary text-primary-fg" : "border-line bg-surface"}`}>{e.status === "done" ? "✓" : e.status === "skipped" ? "–" : i + 1}</button></li>
           ))}
         </ol>
       </header>
@@ -151,7 +149,6 @@ export function Player({ session, onFinished }: { session: WorkoutSession; onFin
           <p className="text-muted">{def.muscles.join(" · ")}{def.perSide && " · each side"}</p>
         </div>
         <ExerciseMedia exercise={def} compact />
-        <Instructions exercise={def} open={firstTime && done.length === 0} />
         <dl className="grid grid-cols-3 gap-2 text-center">
           <div className="rounded-xl bg-surface2 p-2"><dt className="text-xs font-semibold text-muted">Set</dt><dd className="text-lg font-bold">{Math.min(done.length + 1, Math.max(ex.targetSets, done.length + 1))} of {Math.max(ex.targetSets, done.length)}</dd></div>
           <div className="rounded-xl bg-surface2 p-2"><dt className="text-xs font-semibold text-muted">{timed ? "Seconds" : "Reps"}</dt><dd className="text-lg font-bold">{ex.repMin}–{ex.repMax}</dd></div>
@@ -240,6 +237,9 @@ export function Player({ session, onFinished }: { session: WorkoutSession; onFin
         <Card className="space-y-3"><p className="text-center font-semibold text-muted">Resting – when you&apos;re ready, log your next set.</p>
           <Button size="xl" onClick={() => run((d, c) => A.restSkip(d, c, sid))}>I&apos;m ready</Button></Card>
       )}
+
+      <Instructions exercise={def} />
+      {firstTime && done.length === 0 && <p className="-mt-2 text-center text-sm text-muted">New exercise? Open &ldquo;How to do it&rdquo; above for the steps.</p>}
 
       <div className="grid grid-cols-2 gap-2 pb-6">
         <Button variant="outline" onClick={() => run((d, c) => A.addExtraSet(d, c, sid))}><Repeat size={18} aria-hidden /> REPEAT SET</Button>
