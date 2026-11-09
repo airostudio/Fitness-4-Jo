@@ -7,6 +7,7 @@ import { lastPerformance } from "@/lib/store/selectors";
 import { formatDateAU } from "@/lib/domain/dates";
 import { useApp } from "@/lib/store/provider";
 import { Badge, Card, Notice } from "@/components/ui";
+import { CategoryArt } from "@/components/art";
 import { ExerciseMedia } from "@/components/exercise-media";
 
 export function ExerciseDetail({ id }: { id: string }) {
@@ -20,9 +21,9 @@ export function ExerciseDetail({ id }: { id: string }) {
   return (
     <article className="space-y-5">
       <Link href="/exercises" className="inline-flex min-h-11 items-center gap-1 font-semibold underline"><ArrowLeft size={18} aria-hidden /> Exercise library</Link>
-      <header><h1 className="text-3xl font-bold">{e.name}</h1><p className="text-muted">{CATEGORY_LABELS[e.category]} · {e.muscles.join(", ")}</p>
+      <header className="flex items-center gap-4"><CategoryArt category={e.category} size={88} /><div><h1 className="text-3xl font-bold">{e.name}</h1><p className="text-muted">{CATEGORY_LABELS[e.category]} · {e.muscles.join(", ")}</p>
         <div className="mt-2 flex flex-wrap gap-2"><Badge>{["Gentle", "Moderate", "Challenging"][e.difficulty - 1]}</Badge>{e.perSide && <Badge tone="lavender">Do each side</Badge>}
-          {have ? <Badge>You have the equipment</Badge> : <Badge tone="warn">Needs equipment you haven&apos;t listed</Badge>}</div></header>
+          {have ? <Badge>You have the equipment</Badge> : <Badge tone="warn">Needs equipment you haven&apos;t listed</Badge>}</div></div></header>
       <ExerciseMedia exercise={e} />
       <p className="text-lg">{e.description}</p>
       {!have && <Notice tone="warn">This needs: {e.requires.join(", ")}. It won&apos;t be added to your plan unless you add that equipment in Settings.</Notice>}

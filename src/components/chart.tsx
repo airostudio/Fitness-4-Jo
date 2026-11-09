@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface Series { key: string; label: string; color?: string; }
 /** Accessible chart: a text summary for screen readers plus the same data as a table. Colour is never the only signal (labels, markers, table). */
@@ -18,14 +18,15 @@ export function AccessibleChart({ title, summary, data, xKey, series, kind, unit
             <BarChart data={data} margin={{ left: -16, right: 8, top: 8 }}>
               <CartesianGrid stroke="var(--border)" vertical={false} /><XAxis dataKey={xKey} {...axis} /><YAxis allowDecimals={false} {...axis} />
               <Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--fg)" }} />
-              {series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color ?? "var(--primary)"} radius={[6, 6, 0, 0]} />)}
+              {series.map((s) => <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color ?? "var(--ring-fill)"} radius={[10, 10, 0, 0]} />)}
             </BarChart>
           ) : (
-            <LineChart data={data} margin={{ left: -16, right: 8, top: 8 }}>
+            <AreaChart data={data} margin={{ left: -16, right: 8, top: 8 }}>
+              <defs>{series.map((s, i) => <linearGradient key={s.key} id={`g-${s.key}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={s.color ?? "var(--ring-fill)"} stopOpacity={i ? 0.12 : 0.35} /><stop offset="100%" stopColor={s.color ?? "var(--ring-fill)"} stopOpacity={0} /></linearGradient>)}</defs>
               <CartesianGrid stroke="var(--border)" vertical={false} /><XAxis dataKey={xKey} {...axis} /><YAxis {...axis} domain={["auto", "auto"]} />
               <Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--fg)" }} />
-              {series.map((s, i) => <Line key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color ?? "var(--primary)"} strokeWidth={3} strokeDasharray={i ? "6 4" : undefined} dot={{ r: 4, fill: "var(--surface)", strokeWidth: 2 }} connectNulls />)}
-            </LineChart>
+              {series.map((s, i) => <Area key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color ?? "var(--ring-fill)"} fill={`url(#g-${s.key})`} strokeWidth={3} strokeDasharray={i ? "6 4" : undefined} dot={{ r: 4, fill: "var(--surface)", strokeWidth: 2 }} connectNulls />)}
+            </AreaChart>
           )}
         </ResponsiveContainer>
       </div>

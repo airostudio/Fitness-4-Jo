@@ -9,6 +9,7 @@ import type { EquipmentKey, Experience, FitnessGoals, GoalKey, HealthConsiderati
 import { completeOnboarding } from "@/lib/store/actions";
 import { useApp } from "@/lib/store/provider";
 import { GOALS, DAY_OPTIONS, TIMEZONES, parseWeights } from "@/lib/options";
+import { EquipIcon, HeroArt } from "@/components/art";
 import { Button, Card, ChoiceGroup, CheckGroup, Field, Input, Notice, ProgressBar, Select, Textarea } from "@/components/ui";
 
 const STEPS = ["About you", "Your experience", "Comfort & health", "Equipment", "Your goals", "Your programme"];
@@ -83,11 +84,15 @@ export default function Onboarding() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <p className="text-sm font-semibold text-muted">Step {step + 1} of {STEPS.length}</p>
-        <h1 className="text-3xl font-bold">{step === 0 ? "Welcome to JoStrong" : STEPS[step]}</h1>
-        {step === 0 && <p className="mt-1 text-muted">A little stronger, every day. Let&apos;s set things up around you. Everything here is optional unless marked.</p>}
-        <div className="mt-3"><ProgressBar value={step + 1} max={STEPS.length} label="Setup progress" /></div>
+      <header className="hero relative">
+        <HeroArt />
+        <div className="hero-body p-6 pb-20">
+          <p className="text-sm font-semibold opacity-90">Step {step + 1} of {STEPS.length}</p>
+          <h1 className="text-3xl font-extrabold">{step === 0 ? "Welcome to JoStrong" : STEPS[step]}</h1>
+          <p className="mt-1 max-w-xs opacity-95">{step === 0 ? "A little stronger, every day. Let's set things up around you. Everything is optional unless marked." : ["", "Tell us where you're starting from.", "Only what helps us choose gentler options.", "We only pick what you can do.", "What would make this worthwhile?", "Here's your plan."][step]}</p>
+          <div className="mt-4 flex gap-1.5" aria-hidden>{STEPS.map((_, i) => <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-white" : "bg-white/30"}`} />)}</div>
+          <div className="sr-only"><ProgressBar value={step + 1} max={STEPS.length} label="Setup progress" /></div>
+        </div>
       </header>
 
       {step === 0 && (
@@ -155,7 +160,7 @@ export default function Onboarding() {
         <Card className="space-y-6">
           <CheckGroup legend="What equipment do you have?" hint="We only choose exercises you can do with what you tick." values={equip}
             onToggle={(v) => setEquip((e) => (e.includes(v) ? e.filter((x) => x !== v) : v === "none" ? ["none"] : [...e.filter((x) => x !== "none"), v]))}
-            options={(Object.keys(EQUIPMENT_LABELS) as EquipmentKey[]).map((k) => ({ value: k, label: EQUIPMENT_LABELS[k] }))} />
+            options={(Object.keys(EQUIPMENT_LABELS) as EquipmentKey[]).map((k) => ({ value: k, label: EQUIPMENT_LABELS[k], icon: <EquipIcon item={k} /> }))} />
           {dumbbells && (
             <Field label="Which dumbbell weights can you use? (kg)" htmlFor="dw" hint="List each weight you have, separated by commas – for example 1, 2, 3, 4. Progress suggestions only ever use weights you list." error={errors.weights}>
               <Input id="dw" inputMode="decimal" value={weightsText} onChange={(e) => setWeightsText(e.target.value)} placeholder="1, 2, 3, 4" />

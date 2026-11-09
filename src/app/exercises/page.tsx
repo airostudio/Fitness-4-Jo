@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { EXERCISES, CATEGORY_LABELS } from "@/lib/domain/exercises";
 import { canDo } from "@/lib/domain/equipment";
 import { useApp } from "@/lib/store/provider";
+import { CategoryArt } from "@/components/art";
 import { Badge, Card, Input, PageHeader, Select } from "@/components/ui";
 import type { ExerciseCategory } from "@/lib/domain/types";
 
@@ -22,8 +23,8 @@ export default function ExerciseLibrary() {
       <p role="status" className="text-muted">{list.length} exercise{list.length === 1 ? "" : "s"}</p>
       <ul className="grid gap-3 sm:grid-cols-2">
         {list.map((e) => (
-          <li key={e.id}><Link href={`/exercises/${e.id}`} className="block h-full rounded-card border border-line bg-surface p-4 shadow-card hover:bg-surface2">
-            <p className="text-lg font-bold">{e.name}</p><p className="text-sm text-muted">{CATEGORY_LABELS[e.category]} · {e.muscles.join(", ")}</p>
+          <li key={e.id}><Link href={`/exercises/${e.id}`} className="lift block h-full rounded-card border border-line bg-surface p-4 shadow-card">
+            <div className="flex items-center gap-3"><CategoryArt category={e.category} size={64} /><div><p className="text-lg font-bold">{e.name}</p><p className="text-sm text-muted">{CATEGORY_LABELS[e.category]} · {e.muscles.join(", ")}</p></div></div>
             <div className="mt-2 flex flex-wrap gap-2"><Badge>{["Gentle", "Moderate", "Challenging"][e.difficulty - 1]}</Badge>{!canDo(e, data.equipment) && <Badge tone="warn">Needs equipment you haven&apos;t listed</Badge>}</div></Link></li>
         ))}
       </ul>

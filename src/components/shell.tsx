@@ -1,5 +1,6 @@
 "use client";
 import { BookHeart, CloudOff, Dumbbell, Home, LineChart, Settings as Cog, WifiOff, Check, RefreshCw, AlertTriangle, Smartphone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
@@ -55,8 +56,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="md:flex">
-      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface pb-safe md:static md:inset-auto md:sticky md:top-0 md:h-dvh md:w-64 md:shrink-0 md:border-r md:border-t-0 md:p-5">
-        <p className="mb-6 hidden md:block"><span className="text-2xl font-extrabold text-primary">JoStrong</span><span className="block text-sm text-muted">A little stronger, every day.</span></p>
+      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 pb-safe backdrop-blur md:static md:inset-auto md:sticky md:top-0 md:h-dvh md:w-64 md:shrink-0 md:border-r md:border-t-0 md:p-5">
+        <p className="mb-6 hidden items-center gap-3 md:flex"><Image src="/icons/icon-192.png" alt="" width={44} height={44} className="rounded-2xl" /><span><span className="block text-2xl font-extrabold text-primary">JoStrong</span><span className="block text-sm text-muted">A little stronger, every day.</span></span></p>
         <ul className="mx-auto flex max-w-xl justify-around md:block md:space-y-1">
           {NAV.map(({ href, label, Icon }) => {
             const active = href === "/" ? path === "/" : path.startsWith(href);
@@ -65,7 +66,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Link href={href} aria-current={active ? "page" : undefined}
                   className={cn("flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-xs font-semibold md:min-h-12 md:flex-row md:justify-start md:gap-3 md:rounded-full md:px-4 md:text-base",
                     active ? "text-primary md:bg-soft" : "text-muted hover:text-fg")}>
-                  <span className={cn("flex h-8 w-14 items-center justify-center rounded-full md:h-auto md:w-auto", active && "bg-soft md:bg-transparent")}><Icon size={22} aria-hidden /></span>
+                  <span className={cn("flex h-8 w-14 items-center justify-center rounded-full md:h-auto md:w-auto", active && "bg-primary text-primary-fg md:bg-transparent md:text-inherit")}><Icon size={22} aria-hidden /></span>
                   <span>{label}</span>
                 </Link>
               </li>

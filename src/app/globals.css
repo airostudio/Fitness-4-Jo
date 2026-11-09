@@ -28,6 +28,12 @@
   --radius: 1.25rem;
   --shadow: 0 1px 2px rgb(48 52 48 / 6%), 0 8px 24px rgb(48 52 48 / 7%);
   --text-scale: 1;
+  --hero-from: #304a3b; --hero-to: #5a7d68; --hero-fg: #ffffff;
+  --ring-track: #e2e8e1; --ring-fill: #3f6a52;
+  --art-sun: #ebc9ba; --art-hill1: #829b87; --art-hill2: #5f8570; --art-hill3: #3a5c49; --art-leaf: #b9aec9;
+  --tile-sage: #dfe9e1; --tile-sage-fg: #2d4d3a; --tile-peach: #f6e0d5; --tile-peach-fg: #6a3b27;
+  --tile-lav: #e5e0ee; --tile-lav-fg: #3d3354; --tile-sand: #efe8d6; --tile-sand-fg: #5b4a1f;
+  --mesh: radial-gradient(60rem 30rem at 0% -10%, #e6efe7 0%, transparent 60%), radial-gradient(50rem 30rem at 100% 0%, #f6e5dc 0%, transparent 55%);
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -53,6 +59,12 @@
   --warn-soft: #3b3014;
   --warn-fg: #f7dc9b;
   --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 30%);
+  --hero-from: #223a2c; --hero-to: #3d5f4b; --hero-fg: #f3f6f2;
+  --ring-track: #2e3b33; --ring-fill: #a9c5b0;
+  --art-sun: #d9a893; --art-hill1: #4a6b57; --art-hill2: #37543f; --art-hill3: #243a2d; --art-leaf: #8a7fa3;
+  --tile-sage: #2b3d31; --tile-sage-fg: #cfe5d6; --tile-peach: #4a352c; --tile-peach-fg: #f6e2d8;
+  --tile-lav: #3b3550; --tile-lav-fg: #e6e0f1; --tile-sand: #433c26; --tile-sand-fg: #efe3bd;
+  --mesh: radial-gradient(60rem 30rem at 0% -10%, #1d2b22 0%, transparent 60%), radial-gradient(50rem 30rem at 100% 0%, #2a2230 0%, transparent 55%);
   color-scheme: dark;
 }
 :root[data-contrast="high"] {
@@ -73,7 +85,7 @@
 }
 
 html { font-size: calc(100% * var(--text-scale)); -webkit-text-size-adjust: 100%; }
-body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); line-height: 1.55; min-height: 100dvh; }
+body { background: var(--mesh) no-repeat, var(--bg); background-color: var(--bg); color: var(--fg); font-family: var(--font-sans); line-height: 1.55; min-height: 100dvh; }
 h1, h2, h3 { letter-spacing: -0.01em; line-height: 1.2; }
 
 /* Visible focus for every interactive element (WCAG 2.4.7 / 2.4.11) */
@@ -91,3 +103,16 @@ button, a, input, select, textarea, summary { touch-action: manipulation; }
 .bar-fill { transition: width 0.5s ease; }
 dialog::backdrop { background: rgb(0 0 0 / 50%); }
 .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+/* ---- graphic layer ---- */
+.hero { position: relative; overflow: hidden; color: var(--hero-fg); background: linear-gradient(135deg, var(--hero-from), var(--hero-to)); border-radius: 1.75rem; box-shadow: var(--shadow); }
+.hero > .hero-body { position: relative; z-index: 1; }
+.tile { border-radius: 1.5rem; }
+.ring-anim { transition: stroke-dashoffset 0.8s cubic-bezier(.2,.8,.2,1); }
+.lift { transition: transform .2s ease, box-shadow .2s ease; }
+.lift:hover { transform: translateY(-2px); }
+@keyframes fall { 0% { opacity: 0; transform: translateY(-20px) rotate(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(150px) rotate(420deg); } }
+.confetti { position: absolute; top: 0; width: 8px; height: 14px; border-radius: 2px; opacity: 0; animation: fall 2.4s ease-out 1 both; }
+@keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+.breathe { animation: breathe 4s ease-in-out infinite; }
+@media (forced-colors: active) { .hero { border: 2px solid CanvasText; } }

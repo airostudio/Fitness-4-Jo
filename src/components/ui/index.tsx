@@ -30,7 +30,7 @@ export const buttonClass = (o?: VariantProps<typeof button>, extra?: string) => 
 
 // ------------------------------------------------------------ Layout bits
 export function Card({ className, ...p }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-card bg-surface p-5 shadow-card border border-line", className)} {...p} />;
+  return <div className={cn("rounded-card bg-surface p-5 shadow-card border border-line/70", className)} {...p} />;
 }
 export function Badge({ tone = "soft", className, ...p }: HTMLAttributes<HTMLSpanElement> & { tone?: "soft" | "peach" | "lavender" | "warn" | "danger" }) {
   const t = { soft: "bg-soft text-softfg", peach: "bg-peach text-peachfg", lavender: "bg-lavender text-lavenderfg", warn: "bg-warnsoft text-warnfg", danger: "bg-dangersoft text-danger" }[tone];
@@ -99,7 +99,7 @@ export function ChoiceGroup<T extends string | number>({ legend, value, onChange
   );
 }
 export function CheckGroup<T extends string | number>({ legend, values, onToggle, options, hint, columns = 2 }: {
-  legend: string; values: T[]; onToggle: (v: T) => void; options: { value: T; label: string; description?: string }[]; hint?: string; columns?: 1 | 2;
+  legend: string; values: T[]; onToggle: (v: T) => void; options: { value: T; label: string; description?: string; icon?: ReactNode }[]; hint?: string; columns?: 1 | 2;
 }) {
   return (
     <fieldset className="space-y-2">
@@ -111,6 +111,7 @@ export function CheckGroup<T extends string | number>({ legend, values, onToggle
           return (
             <label key={String(o.value)} className={cn("flex min-h-12 cursor-pointer items-start gap-3 rounded-2xl border-2 px-4 py-3 has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--focus)]", on ? "border-primary bg-soft" : "border-line bg-surface hover:bg-surface2")}>
               <input type="checkbox" className="sr-only" checked={on} onChange={() => onToggle(o.value)} />
+              {o.icon && <span aria-hidden className={cn("flex size-11 shrink-0 items-center justify-center rounded-2xl", on ? "bg-primary text-primary-fg" : "bg-soft text-softfg")}>{o.icon}</span>}
               <span aria-hidden className={cn("mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md border-2", on ? "border-primary bg-primary text-primary-fg" : "border-inputline")}>{on && "✓"}</span>
               <span><span className="block font-semibold">{o.label}</span>{o.description && <span className="block text-sm text-muted">{o.description}</span>}</span>
             </label>

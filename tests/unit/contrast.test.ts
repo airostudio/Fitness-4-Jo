@@ -21,6 +21,12 @@ const themes: Record<string, Record<string, string>> = {
 // [foreground, background] pairs used for text (AA = 4.5:1), plus non-text UI boundaries (3:1)
 const TEXT: [string, string][] = [["fg", "bg"], ["fg", "surface"], ["muted", "bg"], ["muted", "surface"], ["muted", "surface-2"], ["primary-fg", "primary"],
   ["accent-fg", "accent-soft"], ["peach-fg", "peach"], ["lavender-fg", "lavender"], ["danger", "surface"], ["danger", "danger-soft"], ["warn-fg", "warn-soft"], ["primary", "bg"]];
+describe("hero gradient and illustration tiles keep text readable (AA)", () => {
+  for (const [name, t] of Object.entries(themes)) {
+    for (const end of ["hero-from", "hero-to"]) it(`${name}: hero text on ${end}`, () => { expect(ratio(t["hero-fg"]!, t[end]!)).toBeGreaterThanOrEqual(4.5); });
+    for (const k of ["sage", "peach", "lav", "sand"]) it(`${name}: tile-${k}`, () => { expect(ratio(t[`tile-${k}-fg`]!, t[`tile-${k}`]!)).toBeGreaterThanOrEqual(4.5); });
+  }
+});
 describe("WCAG AA colour contrast of the design tokens", () => {
   for (const [name, t] of Object.entries(themes)) {
     for (const [f, b] of TEXT) it(`${name}: ${f} on ${b} ≥ 4.5:1`, () => { expect(ratio(t[f]!, t[b]!)).toBeGreaterThanOrEqual(4.5); });

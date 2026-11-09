@@ -1,7 +1,7 @@
 "use client";
-import { ArrowRight, Award, CalendarDays, Heart, Play, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, CalendarDays, Heart, Play, Sparkles, Trophy } from "lucide-react";
 import Link from "next/link";
-import { WEEKDAY_NAMES, diffDays, formatDateAU, hourInTz, isoWeekday } from "@/lib/domain/dates";
+import { WEEKDAY_NAMES, WEEKDAY_SHORT, diffDays, formatDateAU, hourInTz, isoWeekday } from "@/lib/domain/dates";
 import { greeting, restDayMessage, weekSummary } from "@/lib/domain/messages";
 import { PHASE_LABELS, phaseForWeek } from "@/lib/domain/program";
 import { MILESTONE_DEFS, latestMilestone, personalBests, sessionsThisWeek } from "@/lib/domain/stats";
@@ -10,6 +10,7 @@ import { exerciseName, finishedSessions, activeSession, openRecommendations, day
 import { confirmWeekReview, weekReviewFor, acknowledgeClearance } from "@/lib/store/actions";
 import { useApp } from "@/lib/store/provider";
 import { Badge, Button, Card, Notice, ProgressBar, buttonClass } from "@/components/ui";
+import { HeroArt, Medal, Ring, RestArt, WeekDots } from "@/components/art";
 import { RecommendationCard } from "@/components/recommendation-card";
 import { mondayOf, addDays } from "@/lib/domain/dates";
 
@@ -39,10 +40,20 @@ export default function HomePage() {
 
   return (
     <div className="space-y-5">
-      <header className="rise">
-        <h1 className="text-3xl font-bold">{greeting(name, hour)}</h1>
-        <p className="mt-1 text-lg text-muted">{weekSummary(name, done, plannedThisWeek, today)}</p>
-      </header>
+      <section className="hero rise" aria-labelledby="hello">
+        <HeroArt />
+        <div className="hero-body flex items-start justify-between gap-4 p-6 pb-24">
+          <div className="max-w-[16rem]">
+            <p className="text-sm font-semibold opacity-90">Week {prog.currentWeek} · {phase.name}</p>
+            <h1 id="hello" className="mt-1 text-3xl font-extrabold">{greeting(name, hour)}</h1>
+            <p className="mt-2 text-[1.05rem] leading-snug opacity-95">{weekSummary(name, done, plannedThisWeek, today)}</p>
+          </div>
+          <Ring value={done} max={Math.max(plannedThisWeek, done, 1)} size={104} stroke={11} label="Sessions completed this week">
+            <span className="text-2xl font-extrabold leading-none">{done}/{Math.max(plannedThisWeek, done, 1)}</span><span className="text-[0.7rem] font-semibold uppercase tracking-wide opacity-80">this week</span>
+          </Ring>
+        </div>
+      </section>
+      <Card className="-mt-2"><WeekDots days={Array.from({ length: 7 }, (_, k) => { const d = addDays(monday, k); const sc = data.scheduled.find((x) => x.date === d && x.status !== "skipped"); return { label: WEEKDAY_SHORT[k]!, today: d === today, letter: sc?.letter, state: sc?.status === "completed" ? "done" as const : sc ? "planned" as const : "rest" as const }; })} /></Card>
 
       {locked && (
         <Notice tone="warn" title="Please check in with a professional first">
@@ -57,7 +68,7 @@ export default function HomePage() {
           <Link href="/workout" className={buttonClass({ size: "xl" })}><Play aria-hidden /> Resume workout</Link>
         </Card>
       ) : todays && todays.status === "planned" && !completedToday ? (
-        <Card className="space-y-3 bg-soft">
+        <Card className="space-y-3 border-0 bg-gradient-to-br from-soft to-surface">
           <Badge tone="peach">Today · Workout {todays.letter}</Badge>
           <h2 className="text-2xl font-bold">Ready for a little strength training?</h2>
           <p className="text-muted">Week {prog.currentWeek} · {phase.name}. {data.preferences.sessionMinutes ? `About ${Math.min(data.preferences.sessionMinutes, 45)} minutes.` : ""}</p>
@@ -66,7 +77,7 @@ export default function HomePage() {
       ) : completedToday ? (
         <Card className="space-y-2 bg-soft"><h2 className="flex items-center gap-2 text-2xl font-bold"><Heart aria-hidden size={24} /> Today&apos;s session is done</h2><p className="text-muted">Lovely work, {name}. Rest well.{next ? ` Next up: Workout ${next.letter} on ${formatDateAU(next.date, "weekday")}.` : ""}</p></Card>
       ) : (
-        <Card className="space-y-2 bg-lavender text-lavenderfg"><h2 className="text-2xl font-bold">Rest day</h2><p>{restDayMessage(today)}</p>
+        <Card className="relative space-y-2 overflow-hidden bg-lavender text-lavenderfg"><RestArt className="absolute -right-2 top-2 w-32 opacity-40" /><h2 className="text-2xl font-bold">Rest day</h2><p>{restDayMessage(today)}</p>
           {next && <p className="font-semibold">Next training day: {formatDateAU(next.date, "weekday")} (Workout {next.letter})</p>}
           <Link href="/workout" className={buttonClass({ variant: "outline" }, "border-lavenderfg text-lavenderfg")}>Feeling like a session anyway?</Link></Card>
       )}
@@ -99,7 +110,7 @@ export default function HomePage() {
         </Card>
         <Card className="space-y-2"><h2 className="flex items-center gap-2 text-lg font-bold"><Sparkles aria-hidden size={20} /> Recovery</h2><p className="text-xl font-semibold">{recovery}</p>
           <p className="text-sm text-muted">Rest days are when your muscles adapt.</p></Card>
-        <Card className="space-y-2"><h2 className="flex items-center gap-2 text-lg font-bold"><Award aria-hidden size={20} /> Latest achievement</h2>
+        <Card className="space-y-2"><div className="flex items-center gap-3"><Medal size={52} /><h2 className="text-lg font-bold">Latest achievement</h2></div>
           {ms ? <><p className="text-xl font-semibold">{MILESTONE_DEFS[ms.key]?.title}</p><p className="text-sm text-muted">{MILESTONE_DEFS[ms.key]?.message}</p></> : <p className="text-muted">Your first milestone is just one session away.</p>}</Card>
         <Card className="space-y-2"><h2 className="flex items-center gap-2 text-lg font-bold"><Trophy aria-hidden size={20} /> Recent personal best</h2>
           {pb ? <><p className="text-xl font-semibold">{exerciseName(pb.exerciseId)}</p><p className="text-sm text-muted">{formatKg(pb.weight)} × {pb.reps} on {formatDateAU(pb.date)}</p></> : <p className="text-muted">Log a weighted exercise and your personal bests will appear here.</p>}</Card>

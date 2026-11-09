@@ -7,6 +7,7 @@ import { MILESTONE_DEFS, compareToStart, completionRate, exerciseSeries, inRange
 import { deleteSession } from "@/lib/store/actions";
 import { exerciseName, finishedSessions, setsFor } from "@/lib/store/selectors";
 import { useApp } from "@/lib/store/provider";
+import { HeroArt, Ring } from "@/components/art";
 import { AccessibleChart } from "@/components/chart";
 import { Button, Card, ChoiceGroup, Dialog, EmptyState, PageHeader, Select, Stat, Badge } from "@/components/ui";
 
@@ -45,9 +46,12 @@ export default function ProgressPage() {
       <Card><ChoiceGroup legend="Show me" value={range} onChange={setRange} options={RANGES} columns={2} /></Card>
 
       <section aria-labelledby="cons" className="space-y-3"><h2 id="cons" className="text-xl font-bold">Consistency</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="hero relative"><HeroArt /><div className="hero-body flex flex-wrap items-center justify-around gap-4 p-6 pb-24">
+          <Ring value={sessions.length} max={Math.max(25, sessions.length)} size={120} stroke={12} label="Progress to 25 workouts"><span className="text-3xl font-extrabold leading-none">{sessions.length}</span><span className="text-xs font-semibold uppercase opacity-80">workouts</span></Ring>
+          <Ring value={rate ?? 0} max={100} size={120} stroke={12} label="Completion rate"><span className="text-3xl font-extrabold leading-none">{rate == null ? "–" : `${rate}%`}</span><span className="text-xs font-semibold uppercase opacity-80">completed</span></Ring>
+        </div></div>
+        <div className="grid grid-cols-2 gap-3">
           <Stat label="This week" value={sessionsThisWeek(sessions, today)} /><Stat label="This month" value={sessionsThisMonth(sessions, today)} />
-          <Stat label="Completion" value={rate == null ? "–" : `${rate}%`} sub="of planned sessions" /><Stat label="All time" value={sessions.length} sub="sessions" />
         </div>
         <Card><AccessibleChart title="Workouts per week" kind="bar" data={weeks} xKey="label" series={[{ key: "Workouts", label: "Workouts" }]} summary={`${inR.length} workouts in this period.`} /></Card>
       </section>

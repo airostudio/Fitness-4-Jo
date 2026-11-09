@@ -7,6 +7,7 @@ import type { EquipmentKey, GoalKey, Profile } from "@/lib/domain/types";
 import { updateSingle } from "@/lib/store/actions";
 import { useApp } from "@/lib/store/provider";
 import { DAY_OPTIONS, GOALS, TIMEZONES, parseWeights } from "@/lib/options";
+import { EquipIcon } from "@/components/art";
 import { Button, Card, CheckGroup, ChoiceGroup, Field, Input, Notice, Select, Switch, Textarea } from "@/components/ui";
 
 export function ProfileCard() {
@@ -57,7 +58,7 @@ export function EquipmentCard() {
   const bad = dumbbells && wt.trim() && !parseWeights(wt).length;
   return (
     <Card className="space-y-4" id="equipment"><h2 className="text-xl font-bold">Equipment</h2>
-      <CheckGroup legend="What you have" values={items} onToggle={(v) => setItems((x) => (x.includes(v) ? x.filter((y) => y !== v) : v === "none" ? ["none"] : [...x.filter((y) => y !== "none"), v]))} options={(Object.keys(EQUIPMENT_LABELS) as EquipmentKey[]).map((k) => ({ value: k, label: EQUIPMENT_LABELS[k] }))} />
+      <CheckGroup legend="What you have" values={items} onToggle={(v) => setItems((x) => (x.includes(v) ? x.filter((y) => y !== v) : v === "none" ? ["none"] : [...x.filter((y) => y !== "none"), v]))} options={(Object.keys(EQUIPMENT_LABELS) as EquipmentKey[]).map((k) => ({ value: k, label: EQUIPMENT_LABELS[k], icon: <EquipIcon item={k} /> }))} />
       {dumbbells && <Field label="Dumbbell weights available (kg)" htmlFor="ew" hint="Separate with commas, e.g. 1, 2, 3, 4" error={bad ? "Enter weights in kg, e.g. 1, 2, 3." : undefined}><Input id="ew" inputMode="decimal" value={wt} onChange={(ev) => setWt(ev.target.value)} /></Field>}
       <Notice>Changing equipment updates which exercises can be in your plan. Your history is never deleted.</Notice>
       <Button disabled={!!bad} onClick={() => { run((d, c) => updateSingle(d, c, "equipment", { items: items.length ? items : ["none"], dumbbellWeightsKg: dumbbells ? parseWeights(wt) : [] })); toast("Equipment saved and your plan refreshed."); }}>Save equipment</Button></Card>

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { PartyPopper } from "lucide-react";
+import { Confetti, HeroArt, Medal } from "@/components/art";
 import { MILESTONE_DEFS } from "@/lib/domain/stats";
 import { mustExercise } from "@/lib/domain/exercises";
 import { encouragement } from "@/lib/domain/messages";
@@ -28,12 +28,12 @@ export function Summary({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="space-y-5">
-      <Card className="space-y-2 bg-soft text-center">
-        <PartyPopper aria-hidden className="mx-auto text-primary" size={36} />
+      <section className="hero relative space-y-2 p-8 pb-24 text-center"><HeroArt /><Confetti />
+        <div className="hero-body space-y-2"><Medal size={72} className="mx-auto breathe" />
         <h1 className="text-3xl font-bold">{s.status === "completed" ? "Workout complete!" : "Nicely done!"}</h1>
         <p>{sets.length === 0 ? "No sets were logged – that's okay. Come back whenever you like." : `${data.profile?.name ?? "Jo"}, you logged ${sets.length} set${sets.length === 1 ? "" : "s"} in about ${mins} minute${mins === 1 ? "" : "s"}. ${encouragement(sessionId)}`}</p>
         {s.status === "ended_early" && sets.length > 0 && <p className="text-sm">You finished early, and everything you did is saved. That still counts.</p>}
-      </Card>
+      </div></section>
       {ms.map((m) => <Notice key={m.id} tone="peach" title={MILESTONE_DEFS[m.key]?.title ?? "Milestone"}>{MILESTONE_DEFS[m.key]?.message}</Notice>)}
       {sets.length > 0 && (
         <Card><h2 className="text-lg font-bold">Today at a glance</h2>

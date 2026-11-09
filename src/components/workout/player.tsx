@@ -11,6 +11,7 @@ import * as A from "@/lib/store/actions";
 import { lastPerformance, setsFor } from "@/lib/store/selectors";
 import { useApp } from "@/lib/store/provider";
 import { Button, Card, ChoiceGroup, Dialog, Field, Input, Notice, ProgressBar, Textarea } from "@/components/ui";
+import { CategoryArt, Ring } from "@/components/art";
 import { ExerciseMedia, Instructions } from "@/components/exercise-media";
 
 function useNow(active: boolean, ms = 250) {
@@ -144,9 +145,12 @@ export function Player({ session, onFinished }: { session: WorkoutSession; onFin
       </header>
 
       <Card className="space-y-3">
-        <div>
+        <div className="flex items-center gap-4">
+          <CategoryArt category={def.category} size={76} />
+          <div>
           <h2 className="text-2xl font-bold">{def.name}{ex.originalExerciseId && <span className="ml-2 align-middle text-sm font-normal text-muted">(swapped from {mustExercise(ex.originalExerciseId).name})</span>}</h2>
           <p className="text-muted">{def.muscles.join(" · ")}{def.perSide && " · each side"}</p>
+          </div>
         </div>
         <ExerciseMedia exercise={def} compact />
         <dl className="grid grid-cols-3 gap-2 text-center">
@@ -173,7 +177,8 @@ export function Player({ session, onFinished }: { session: WorkoutSession; onFin
 
       {resting && (
         <Card className="space-y-3 bg-lavender text-lavenderfg" role="timer" aria-label="Rest timer">
-          <div className="flex items-center justify-between"><h3 className="flex items-center gap-2 font-bold"><Timer aria-hidden size={20} /> Rest</h3><p className="text-4xl font-extrabold tabular-nums" aria-hidden>{fmt(restRemaining)}</p></div>
+          <div className="flex items-center gap-4"><Ring value={session.rest ? session.rest.durationMs / 1000 - restRemaining : 0} max={Math.max(1, (session.rest?.durationMs ?? 1000) / 1000)} size={104} stroke={10} label="Rest progress"><span className="text-2xl font-extrabold tabular-nums" aria-hidden>{fmt(restRemaining)}</span></Ring>
+            <h3 className="flex items-center gap-2 text-xl font-bold"><Timer aria-hidden size={22} /> Rest</h3></div>
           <p className="sr-only" aria-live="polite">{restRemaining === 0 ? "Rest finished. Ready for your next set." : restPaused ? "Rest paused" : ""}</p>
           {restRemaining === 0 ? <p className="font-semibold">Rest finished – ready when you are.</p> : <p>{restPaused ? "Paused" : "Breathe, sip some water and shake out your arms."}</p>}
           <div className="flex flex-wrap gap-2">
