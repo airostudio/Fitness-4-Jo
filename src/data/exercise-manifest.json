@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "chair-squat",
+    "name": "Chair Squat",
+    "image": "/exercises/chair-squat.webp",
+    "alt": "AI-generated exercise demonstration for Chair Squat, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "supported-dumbbell-row",
+    "name": "Supported Dumbbell Row",
+    "image": "/exercises/supported-dumbbell-row.webp",
+    "alt": "AI-generated exercise demonstration for Supported Dumbbell Row, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "wall-push-up",
+    "name": "Wall Push-Up",
+    "image": "/exercises/wall-push-up.webp",
+    "alt": "AI-generated exercise demonstration for Wall Push-Up, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "glute-bridge",
+    "name": "Glute Bridge",
+    "image": "/exercises/glute-bridge.webp",
+    "alt": "AI-generated exercise demonstration for Glute Bridge, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "dead-bug",
+    "name": "Dead Bug",
+    "image": "/exercises/dead-bug.webp",
+    "alt": "AI-generated exercise demonstration for Dead Bug, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "dumbbell-romanian-deadlift",
+    "name": "Dumbbell Romanian Deadlift",
+    "image": "/exercises/dumbbell-romanian-deadlift.webp",
+    "alt": "AI-generated exercise demonstration for Dumbbell Romanian Deadlift, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "seated-shoulder-press",
+    "name": "Seated Shoulder Press",
+    "image": "/exercises/seated-shoulder-press.webp",
+    "alt": "AI-generated exercise demonstration for Seated Shoulder Press, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "supported-step-up",
+    "name": "Supported Step-Up",
+    "image": "/exercises/supported-step-up.webp",
+    "alt": "AI-generated exercise demonstration for Supported Step-Up, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "dumbbell-bicep-curl",
+    "name": "Dumbbell Bicep Curl",
+    "image": "/exercises/dumbbell-bicep-curl.webp",
+    "alt": "AI-generated exercise demonstration for Dumbbell Bicep Curl, showing starting position above and movement position below. Illustrative; check technique guidance."
+  },
+  {
+    "slug": "bird-dog",
+    "name": "Bird Dog",
+    "image": "/exercises/bird-dog.webp",
+    "alt": "AI-generated exercise demonstration for Bird Dog, showing starting position above and movement position below. Illustrative; check technique guidance."
+  }
+]
