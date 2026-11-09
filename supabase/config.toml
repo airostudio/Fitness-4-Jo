@@ -1,0 +1,23 @@
+# Minimal Supabase CLI config for local development (`supabase start`).
+project_id = "jostrong"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+# Invitation-only deployments: set to false after Jo's account exists (see docs/DEPLOYMENT.md)
+enable_signup = true
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
