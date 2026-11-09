@@ -1,0 +1,5 @@
+# Changes that affect security or health safety need the owner's review.
+*                       @airostudio
+/supabase/              @airostudio
+/src/lib/domain/        @airostudio
+/.github/               @airostudio

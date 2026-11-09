@@ -22,6 +22,9 @@ With no Supabase variables the app stores everything in the browser (IndexedDB) 
 | `npm run gen:seed` | Regenerate `supabase/migrations/0004_seed_reference.sql` from the TypeScript library |
 | `npm run gen:icons` | Re-render PWA icons from `public/icons/icon.svg` |
 
+## Services
+GitHub (CI), Vercel (hosting) and Supabase (database/auth) are documented in `docs/INTEGRATIONS.md`; Claude sessions find them via `.mcp.json` and `CLAUDE.md`.
+
 ## Layout
 - `src/lib/domain` – pure, deterministic rules (exercise library, programme, progression engine, readiness, calendar, sync protocol, schemas).
 - `src/lib/store` – local-first state: pure actions, IndexedDB persistence, sync client.
