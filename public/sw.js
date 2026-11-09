@@ -3,7 +3,7 @@
  * - NEVER caches /api/*, /auth/* or Supabase traffic (personal data and sessions stay out of the cache).
  * - Personal data lives in IndexedDB (per account) and is wiped on sign-out; this worker also deletes its runtime cache then.
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC = `jostrong-static-${VERSION}`;
 const RUNTIME = `jostrong-runtime-${VERSION}`;
 const SHELL = ["/", "/workout", "/workouts", "/progress", "/journey", "/settings", "/offline", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
@@ -41,7 +41,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin || isSensitive(url)) return; // network only, not cached
 
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/")) {
+  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/exercises/")) {
     event.respondWith(caches.open(STATIC).then(async (c) => {
       const hit = await c.match(req);
       if (hit) return hit;

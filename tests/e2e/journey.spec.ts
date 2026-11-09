@@ -151,3 +151,26 @@ test.describe("offline", () => {
     await context.setOffline(false);
   });
 });
+
+test.describe("exercise illustrations", () => {
+  test("detail page and player show the supplied images, labelled as AI-generated, and they work offline", async ({ page, context }) => {
+    await onboard(page);
+    await page.goto("/exercises/dumbbell-curl"); // alias: dumbbell-bicep-curl.webp
+    const img = page.getByRole("img", { name: /AI-generated exercise demonstration for Dumbbell Bicep Curl/ });
+    await expect(img).toBeVisible();
+    expect(await img.evaluate((e: HTMLImageElement) => e.complete && e.naturalWidth > 0)).toBe(true);
+    await expect(page.getByText(/AI-generated – always check the written steps/)).toBeVisible();
+    await page.goto("/exercises/bodyweight-squat"); // no image supplied → honest placeholder
+    await expect(page.getByText("Demonstration video not available yet.")).toBeVisible();
+    await page.goto("/workout?letter=A"); // direct entry – independent of today's date
+    await page.getByText("Great", { exact: true }).click(); await page.getByText("Recovered", { exact: true }).click(); await page.getByText("No", { exact: true }).first().click();
+    await page.getByRole("button", { name: "Start workout" }).click();
+    await page.getByText("See the movement").click();
+    await expect(page.getByRole("img", { name: /Chair Squat/ }).first()).toBeVisible();
+    await page.evaluate(() => navigator.serviceWorker.ready); await page.reload();
+    await context.setOffline(true); await page.reload();
+    await page.getByText("See the movement").click();
+    expect(await page.getByRole("img", { name: /Chair Squat/ }).first().evaluate((e: HTMLImageElement) => e.complete && e.naturalWidth > 0)).toBe(true);
+    await context.setOffline(false);
+  });
+});

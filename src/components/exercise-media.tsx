@@ -1,5 +1,6 @@
 import { Dumbbell, ImageOff } from "lucide-react";
 import type { Exercise } from "@/lib/domain/types";
+import { getExerciseImage } from "@/lib/exercise-art";
 
 /** Shows approved, licensed media only. When none exists we say so plainly instead of faking a demonstration. */
 export function ExerciseMedia({ exercise, compact = false }: { exercise: Exercise; compact?: boolean }) {
@@ -10,6 +11,29 @@ export function ExerciseMedia({ exercise, compact = false }: { exercise: Exercis
   if (m.approved && m.url && (m.kind === "image" || m.kind === "animation")) {
     // eslint-disable-next-line @next/next/no-img-element
     return <figure><img src={m.url} alt={`Demonstration of ${exercise.name}`} className="w-full rounded-2xl" /><figcaption className="mt-1 text-xs text-muted">{m.licence}</figcaption></figure>;
+  }
+  const img = getExerciseImage(exercise.id);
+  if (img) {
+    const figure = (
+      <figure className="mx-auto w-full max-w-[19rem]">
+        <div className="overflow-hidden rounded-2xl border border-line" style={{ aspectRatio: `${img.width} / ${img.height}` }}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- fixed-size local asset, cropped via CSS; cached by the service worker */}
+          <img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" className="h-full w-full object-cover object-left" />
+        </div>
+        <figcaption className="mt-1 text-center text-xs text-muted">Illustration: start position above, movement below. AI-generated – always check the written steps and technique notes.</figcaption>
+      </figure>
+    );
+    if (!compact) return figure;
+    return (
+      <details className="rounded-2xl border border-line bg-surface2 p-3">
+        <summary className="flex min-h-11 cursor-pointer items-center gap-3 font-semibold">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={img.src} alt="" aria-hidden width={44} height={74} className="h-[74px] w-11 rounded-lg object-cover object-left-top" style={{ objectPosition: "left top" }} />
+          See the movement
+        </summary>
+        <div className="mt-3">{figure}</div>
+      </details>
+    );
   }
   return (
     <div role="img" aria-label={`No demonstration video available yet for ${exercise.name}. Follow the written steps.`}
