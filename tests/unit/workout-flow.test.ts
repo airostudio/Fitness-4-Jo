@@ -329,3 +329,21 @@ describe("data ownership: export", () => {
     expect(JSON.stringify(out)).not.toContain("queue");
   });
 });
+
+import { mergeRemote } from "@/lib/store/merge";
+describe("pull & merge never loses offline work", () => {
+  it("keeps records with pending operations, takes newer server copies, drops records deleted elsewhere", () => {
+    const sim = new Sim(); sim.onboard();
+    const j1 = sim.do((d, c) => A.saveJournal(d, c, { feeling: "local only (unsynced)" }));
+    const base = { ...sim.data, meta: { queue: [] as typeof sim.data.meta.queue } };
+    const synced = { ...base, journal: [{ ...j1, feeling: "synced older" }] };
+    const remote = { journal: [{ ...j1, feeling: "server newer", updatedAt: "2099-01-01T00:00:00.000Z" }] };
+    expect(mergeRemote(synced, remote).journal[0]!.feeling).toBe("server newer");
+    // pending op protects the local copy
+    expect(mergeRemote(sim.data, remote).journal[0]!.feeling).toBe("local only (unsynced)");
+    // synced locally, gone from server → deleted on another device
+    expect(mergeRemote(synced, { journal: [] }).journal).toHaveLength(0);
+    // never-synced local record survives an empty server
+    expect(mergeRemote(sim.data, { journal: [] }).journal).toHaveLength(1);
+  });
+});

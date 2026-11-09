@@ -242,3 +242,33 @@ export const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
   lower_body: "Lower body", upper_push: "Upper body – pushing", upper_pull: "Upper body – pulling",
   glutes_posterior: "Glutes & posterior chain", core: "Core stability", balance: "Balance", mobility: "Mobility",
 };
+
+// ---------------------------------------------------------------- Admin-managed reference overrides
+// Administrators maintain wording, activation and approved media in the database. The app applies them on top of
+// the bundled library (which is always the offline fallback). Safety structure (equipment, cautions, ladders) is code-owned.
+export interface ExerciseRow {
+  id: string; name?: string; description?: string; starting_position?: string; steps?: string[]; breathing?: string;
+  common_mistakes?: string[]; safety_notes?: string[]; active?: boolean;
+}
+export interface MediaRow { exercise_id: string; kind: "video" | "animation" | "image"; url: string; licence: string; approved: boolean; }
+const INACTIVE = new Set<string>();
+export const isInactive = (id: string) => INACTIVE.has(id);
+export function applyExerciseOverrides(rows: ExerciseRow[], media: MediaRow[]): void {
+  for (const r of rows) {
+    const e = byId.get(r.id);
+    if (!e) continue;
+    if (r.name) e.name = r.name;
+    if (r.description) e.description = r.description;
+    if (r.starting_position) e.startingPosition = r.starting_position;
+    if (r.steps?.length) e.steps = r.steps;
+    if (r.breathing) e.breathing = r.breathing;
+    if (r.common_mistakes?.length) e.commonMistakes = r.common_mistakes;
+    if (r.safety_notes?.length) e.safetyNotes = r.safety_notes;
+    if (r.active === false) INACTIVE.add(r.id); else INACTIVE.delete(r.id);
+  }
+  for (const m of media) {
+    const e = byId.get(m.exercise_id);
+    // Only approved, https, licensed media is ever displayed.
+    if (e && m.approved && m.url.startsWith("https://") && m.licence) e.media = { kind: m.kind, url: m.url, licence: m.licence, approved: true };
+  }
+}

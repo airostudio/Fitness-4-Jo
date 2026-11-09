@@ -1,5 +1,5 @@
 import { canDo } from "./equipment";
-import { getExercise, mustExercise } from "./exercises";
+import { getExercise, isInactive, mustExercise } from "./exercises";
 import type {
   BodyArea, Discomfort, EquipmentInventory, Exercise, ExerciseTarget, FitnessGoals, HealthConsiderations,
   PhaseKey, Preferences, Profile, Program, Screening, SlotChoice, SlotKey, WeekPlan, WorkoutLetter, WorkoutTemplate,
@@ -44,6 +44,9 @@ const SLOT_FALLBACKS: Record<SlotKey, string[]> = {
   calf: ["single-leg-calf-raise"],
   extra_pull: ["band-row", "reverse-fly"],
 };
+
+/** Administrators may change the starter exercise for a slot (validated: the exercise must exist). */
+export function setSlotDefault(slot: SlotKey, exerciseId: string): void { if (getExercise(exerciseId) && slot in SLOT_DEFAULT) SLOT_DEFAULT[slot] = exerciseId; }
 
 const A_SLOTS: SlotKey[] = ["squat", "row", "push", "bridge", "core_a"];
 const B_SLOTS: SlotKey[] = ["hinge", "press", "stepup", "curl", "core_b"];
@@ -134,7 +137,7 @@ function areaLevel(h: HealthConsiderations, a: BodyArea): Discomfort {
 
 /** Exercises that must not be prescribed given confirmed equipment and what Jo told us. */
 export function hardExcluded(ex: Exercise, inv: EquipmentInventory, h: HealthConsiderations): boolean {
-  if (!canDo(ex, inv)) return true;
+  if (!canDo(ex, inv) || isInactive(ex.id)) return true;
   if (!h.answered) return ex.difficulty > 2; // skipped questions: stay conservative
   if (ex.cautions.some((c) => areaLevel(h, c) === "frequent")) return true;
   if (h.balance === "not_confident" && ex.cautions.includes("balance") && ex.difficulty > 1) return true;

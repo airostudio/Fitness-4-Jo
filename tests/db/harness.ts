@@ -62,7 +62,7 @@ export class Harness {
   /** SyncRepo executing under the user's JWT, exactly like the Supabase client in the API route would. */
   repoFor(u: TestUser): SyncRepo {
     return {
-      seen: (_uid, opId) => this.as(u, async (q) => (await q("select 1 from public.offline_sync_operations where op_id = $1", [opId])).length > 0),
+      seen: (_uid, opId) => this.as(u, async (q) => (await q("select 1 from public.offline_sync_operations where op_id = $1 and status in ('applied','conflict')", [opId])).length > 0),
       record: (uid, op: SyncOp, status) => this.as(u, async (q) => { await q("insert into public.offline_sync_operations (user_id, op_id, entity, record_id, status) values ($1,$2,$3,$4,$5) on conflict do nothing", [uid, op.opId, op.entity, op.id, status]); }),
       currentUpdatedAt: (table, uid, id, single) => this.as(u, async (q) => {
         const r = await q(`select updated_at from public.${table} where ${single ? "user_id" : "id"} = $1`, [single ? uid : id]);

@@ -85,6 +85,7 @@ create table public.notification_preferences (
   quiet_start text not null default '21:00',
   quiet_end text not null default '07:00',
   day_before boolean not null default true,
+  last_notified_for date,                 -- server-only: prevents repeat reminders for the same day
   updated_at timestamptz not null,
   server_updated_at timestamptz not null default now()
 );

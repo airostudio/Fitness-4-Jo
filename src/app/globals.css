@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ JoStrong design tokens
+   Palette per the brief; text colours are darkened/adjusted where needed for WCAG AA (verified in tests/unit/contrast.test.ts).
+   Sage (#829B87) is decorative only – never used for body text on light surfaces (2.9:1). */
+:root {
+  --bg: #f9f7f2;
+  --surface: #ffffff;
+  --surface-2: #f1eee6;
+  --fg: #303430;
+  --muted: #565f58;
+  --primary: #304a3b;
+  --primary-fg: #ffffff;
+  --accent: #829b87;
+  --accent-soft: #e3ebe5;
+  --accent-fg: #243a2d;
+  --peach: #ebc9ba;
+  --peach-fg: #4a2c20;
+  --lavender: #b9aec9;
+  --lavender-fg: #2e2740;
+  --border: #d8d3c7;
+  --input-border: #747c75;
+  --focus: #1d5fb8;
+  --danger: #9b2c2c;
+  --danger-soft: #fbe9e7;
+  --warn-soft: #fdf1d8;
+  --warn-fg: #5a3e00;
+  --radius: 1.25rem;
+  --shadow: 0 1px 2px rgb(48 52 48 / 6%), 0 8px 24px rgb(48 52 48 / 7%);
+  --text-scale: 1;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: #141a16;
+  --surface: #1d2620;
+  --surface-2: #26312a;
+  --fg: #eceeea;
+  --muted: #b3beb5;
+  --primary: #a9c5b0;
+  --primary-fg: #14201a;
+  --accent: #829b87;
+  --accent-soft: #28362d;
+  --accent-fg: #d6e6da;
+  --peach: #5a3f33;
+  --peach-fg: #f6e2d8;
+  --lavender: #4a4259;
+  --lavender-fg: #e6e0f1;
+  --border: #36443b;
+  --input-border: #829086;
+  --focus: #8cb4ff;
+  --danger: #ff9d94;
+  --danger-soft: #3b2220;
+  --warn-soft: #3b3014;
+  --warn-fg: #f7dc9b;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 30%);
+  color-scheme: dark;
+}
+:root[data-contrast="high"] {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f2f2f2; --fg: #000000; --muted: #1f1f1f; --primary: #0f2a1b; --border: #000000; --input-border: #000000; --accent-soft: #e6efe8;
+}
+:root[data-theme="dark"][data-contrast="high"] {
+  --bg: #000000; --surface: #000000; --surface-2: #111111; --fg: #ffffff; --muted: #f0f0f0; --primary: #cfe8d6; --primary-fg: #000000; --border: #ffffff; --input-border: #ffffff;
+}
+
+@theme inline {
+  --color-bg: var(--bg); --color-surface: var(--surface); --color-surface2: var(--surface-2); --color-fg: var(--fg); --color-muted: var(--muted);
+  --color-primary: var(--primary); --color-primary-fg: var(--primary-fg); --color-accent: var(--accent); --color-soft: var(--accent-soft); --color-softfg: var(--accent-fg);
+  --color-peach: var(--peach); --color-peachfg: var(--peach-fg); --color-lavender: var(--lavender); --color-lavenderfg: var(--lavender-fg);
+  --color-line: var(--border); --color-inputline: var(--input-border); --color-danger: var(--danger); --color-dangersoft: var(--danger-soft);
+  --color-warnsoft: var(--warn-soft); --color-warnfg: var(--warn-fg);
+  --radius-card: var(--radius); --shadow-card: var(--shadow);
+  --font-sans: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+html { font-size: calc(100% * var(--text-scale)); -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); line-height: 1.55; min-height: 100dvh; }
+h1, h2, h3 { letter-spacing: -0.01em; line-height: 1.2; }
+
+/* Visible focus for every interactive element (WCAG 2.4.7 / 2.4.11) */
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 0.5rem; }
+button, a, input, select, textarea, summary { touch-action: manipulation; }
+
+/* Reduced motion – honour OS setting unless Jo forces animation, or force it off when she asks */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion="system"] *, :root[data-motion="system"] *::before, :root[data-motion="system"] *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+:root[data-motion="reduce"] *, :root[data-motion="reduce"] *::before, :root[data-motion="reduce"] *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.35s ease-out both; }
+.bar-fill { transition: width 0.5s ease; }
+dialog::backdrop { background: rgb(0 0 0 / 50%); }
+.pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }

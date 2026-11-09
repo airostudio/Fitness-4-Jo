@@ -9,7 +9,7 @@ import { MILESTONE_DEFS, newMilestones } from "@/lib/domain/stats";
 import { availableRequirements } from "@/lib/domain/equipment";
 import type {
   Effort, Exercise, ExerciseSet, JournalEntry, ProgressionDecision, ProgressionRecommendation, Proposed, ReadinessCheckin, ReadinessMode, SessionExercise,
-  SetDiscomfort, SlotKey, Technique, WorkoutLetter, WorkoutSession, EquipmentInventory, FitnessGoals, HealthConsiderations, NotificationPrefs, Preferences, Profile,
+  SetDiscomfort, SlotKey, Technique, WorkoutLetter, WorkoutSession, EquipmentInventory, FitnessGoals, HealthConsiderations, Preferences, Profile,
 } from "@/lib/domain/types";
 import { RULE_VERSION } from "@/lib/domain/progression";
 import { historyFor, activeSession, plannedPerWeek, setsFor, suggestedFor, weekAwaitingReview, daysSinceLast, lastSessionDate } from "./selectors";
@@ -337,7 +337,7 @@ export function decide(base: AppData, ctx: Ctx, recId: string, decision: "accept
   const d: ProgressionDecision = { id: ctx.id(), recommendationId: recId, exerciseId: rec.exerciseId, decision, chosen: decision === "accepted" ? chosen : null, decidedAt: ctx.now, updatedAt: ctx.now };
   tx.put("decisions", d);
   if (decision === "accepted" && chosen && base.program) {
-    let program = { ...base.program, exerciseTargets: { ...base.program.exerciseTargets }, updatedAt: ctx.now };
+    const program = { ...base.program, exerciseTargets: { ...base.program.exerciseTargets }, updatedAt: ctx.now };
     if (chosen.exerciseId) {
       // switching to a different variation/regression replaces it in the template (Jo-chosen, so marked custom)
       program.templates = program.templates.map((t) => ({ ...t, slots: t.slots.map((s) => (s.exerciseId === rec.exerciseId ? { ...s, exerciseId: chosen.exerciseId!, custom: true } : s)) }));

@@ -1,0 +1,23 @@
+{
+  "name": "JoStrong",
+  "short_name": "JoStrong",
+  "description": "A little stronger, every day. Your private home strength and wellness companion.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F9F7F2",
+  "theme_color": "#304A3B",
+  "lang": "en-AU",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Start today's workout", "url": "/workout", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "My Journey", "url": "/journey" }
+  ]
+}
